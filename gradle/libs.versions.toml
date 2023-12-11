@@ -1,0 +1,6 @@
+[libraries]
+jetbrains-annotations = "org.jetbrains:annotations:24.1.0"
+slf4j-api = "org.slf4j:slf4j-api:2.0.9"
+
+kotlinx-coroutines-core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
+kotlinx-coroutines-test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3"

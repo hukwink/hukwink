@@ -1,0 +1,42 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.9.21' apply false
+}
+
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+
+allprojects {
+    pluginManager.withPlugin('java') {
+        repositories {
+            mavenCentral()
+        }
+
+
+        tasks.withType(Test).configureEach {
+            useJUnitPlatform()
+        }
+    }
+
+    pluginManager.withPlugin('org.jetbrains.kotlin.jvm') {
+        def kotlin = (KotlinProjectExtension) project.extensions.getByName("kotlin")
+        kotlin.explicitApi()
+        kotlin.sourceSets.getByName("main").kotlin.setSrcDirs(project.files("src"))
+        kotlin.sourceSets.getByName("main").resources.setSrcDirs(project.files("res"))
+        project.sourceSets.getByName("main").java.setSrcDirs(List.of())
+
+        kotlin.sourceSets.getByName("test").kotlin.setSrcDirs(project.files("test"))
+        kotlin.sourceSets.getByName("test").resources.setSrcDirs(project.files("tres"))
+        project.sourceSets.getByName("test").java.setSrcDirs(List.of())
+
+
+        dependencies {
+            api libs.jetbrains.annotations
+            api libs.slf4j.api
+
+            testImplementation 'org.jetbrains.kotlin:kotlin-test'
+
+            testImplementation 'ch.qos.logback:logback-classic:1.4.14'
+            testImplementation libs.kotlinx.coroutines.test
+        }
+
+    }
+}

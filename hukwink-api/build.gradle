@@ -1,0 +1,11 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+dependencies {
+    implementation(project(':hukwink-util'))
+
+    api "org.jetbrains.kotlin:kotlin-reflect"
+    api libs.kotlinx.coroutines.core
+}
+
