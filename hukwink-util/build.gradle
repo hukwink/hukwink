@@ -3,6 +3,8 @@ plugins {
 }
 
 dependencies {
+    api libs.kotlinx.coroutines.core
+
     api "org.jetbrains.kotlin:kotlin-reflect"
 }
 

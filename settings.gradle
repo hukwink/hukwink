@@ -6,3 +6,4 @@ rootProject.name = 'hukwink'
 
 include(':hukwink-api')
 include(':hukwink-util')
+include(':hukwink-httpd')
