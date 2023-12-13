@@ -29,7 +29,7 @@ public class HttpServerDaemon(
             router.get("/").handler { ctx ->
                 ctx.response().putHeader("Context-Type", "application/plain-text")
 
-                ctx.response().end("Project HukWink. From ${ctx.request().remoteAddress()}")
+                ctx.response().end("Project HukWink.")
             }
         }
     }
