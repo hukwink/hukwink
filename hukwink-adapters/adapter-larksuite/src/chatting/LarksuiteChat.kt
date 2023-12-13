@@ -119,15 +119,33 @@ public class LarksuiteChat(
             msgSent["content"] = JsonPrimitive(Json.encodeToString(JsonObject.serializer(), finalContent))
         }
 
+        if (bot.configuration.webhookDebugPrint) {
+            bot.logger.info(
+                "Msg send: {}",
+                LarksuiteHttpResponseProcess.jsonPrettyPrint
+                    .encodeToString(JsonObject.serializer(), JsonObject(msgSent))
+            )
+        }
+
         val httpRequest = if (replyTarget == null) {
             msgSent["receive_id"] = JsonPrimitive(chatInfo.chatId.chatId)
-            bot.httpClient.request(HttpMethod.POST, "/open-apis/im/v1/messages?receive_id_type=" + chatInfo.chatId.chatIdType)
+            bot.httpClient.request(
+                HttpMethod.POST,
+                "/open-apis/im/v1/messages?receive_id_type=" + chatInfo.chatId.chatIdType
+            )
         } else {
             bot.httpClient.request(HttpMethod.POST, "/open-apis/im/v1/messages/${replyTarget.parentId}/reply")
         }.coAwait().larksuiteAuthorization(bot)
         val reply = httpRequest.send(Json.encodeToString(JsonObject.serializer(), JsonObject(msgSent))).coAwait()
         val replyContent = reply.ensureOk().body().coAwait().parseToJsonAndVerify()
 
+        if (bot.configuration.webhookDebugPrint) {
+            bot.logger.info(
+                "Msg send reply: {}",
+                LarksuiteHttpResponseProcess.jsonPrettyPrint
+                    .encodeToString(JsonObject.serializer(), replyContent)
+            )
+        }
         val replyObj = LarksuiteHttpResponseProcess.jsonHttpProcess.decodeFromJsonElement(
             ProtoSendMessageReply.serializer(),
             replyContent

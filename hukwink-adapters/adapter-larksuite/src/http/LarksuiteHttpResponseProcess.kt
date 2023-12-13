@@ -12,6 +12,9 @@ internal object LarksuiteHttpResponseProcess {
     val jsonHttpProcess = Json {
         ignoreUnknownKeys = true
     }
+    val jsonPrettyPrint = Json {
+        prettyPrint = true
+    }
 
     suspend fun HttpClientResponse.ensureOk(): HttpClientResponse {
         if (statusCode() != 200) {
