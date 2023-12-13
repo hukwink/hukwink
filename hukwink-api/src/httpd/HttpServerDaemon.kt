@@ -18,9 +18,11 @@ public class HttpServerDaemon(
 ) {
     public val router: Router = Router.router(vertx)
     public val scope: CoroutineScope = context.childScope("Hukwink Httpd")
-    private lateinit var httpServer0: HttpServer
 
+    private lateinit var httpServer0: HttpServer
     public val httpServer: HttpServer get() = httpServer0
+
+    public lateinit var serverPrefix: String
 
     public fun setup(): Unit = with(scope) {
         coroutineRouter {
@@ -35,6 +37,10 @@ public class HttpServerDaemon(
     public fun start(
         address: SocketAddress
     ) {
+        if (!::serverPrefix.isInitialized) {
+            serverPrefix = "http://127.0.0.1:" + address.port()
+        }
+
         val server = vertx.createHttpServer()
             .requestHandler(router)
             .listen(address)
