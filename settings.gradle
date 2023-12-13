@@ -6,3 +6,12 @@ rootProject.name = 'hukwink'
 
 include(':hukwink-api')
 include(':hukwink-util')
+
+
+def includeAdapter(String name) {
+    def projName = ":hukwink-adapter-$name"
+    include(projName)
+    project(projName).projectDir = new File(rootDir, 'hukwink-adapters/adapter-' + name)
+}
+
+includeAdapter('larksuite')
