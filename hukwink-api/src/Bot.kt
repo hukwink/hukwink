@@ -1,7 +1,6 @@
 package com.hukwink.hukwink
 
 import com.hukwink.hukwink.chatting.ChatId
-import com.hukwink.hukwink.chatting.ChatType
 import com.hukwink.hukwink.chatting.Chatting
 import com.hukwink.hukwink.config.BotConfiguration
 import com.hukwink.hukwink.event.engine.EventEngine
@@ -22,5 +21,5 @@ public interface Bot {
     public fun close(reason: Throwable)
 
 
-    public fun openChat(type: ChatType, chatId: ChatId): Chatting
+    public fun openChat(chatId: ChatId): Chatting
 }

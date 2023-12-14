@@ -37,7 +37,7 @@ internal class EvtMsgReceive : MsgV2Processor<ProtoEventReceiveMessage>() {
             chatInfo = resolveChatInfo(chatId),
         )
 
-        val sender = event.sender.resolveUserInfo()
+        val sender = event.sender.resolveUserInfo(bot)
 
         bot.eventEngine.fire(
             LarksuiteIncomingMessageEvent(
@@ -57,11 +57,14 @@ internal class EvtMsgReceive : MsgV2Processor<ProtoEventReceiveMessage>() {
         }
     }
 
-    private fun ProtoEventReceiveMessage.Sender.resolveUserInfo(): UserInfo {
+    private fun ProtoEventReceiveMessage.Sender.resolveUserInfo(bot: LarksuiteBot): UserInfo {
         return object : UserInfo {
-            override val userId: String get() = this@resolveUserInfo.sender_id.union_id
+            override val userId: String get() = this@resolveUserInfo.sender_id.resolveId(bot = bot)
 
             override val username: String
+                get() = TODO("Not yet implemented")
+
+            override val chatId: ChatId
                 get() = TODO("Not yet implemented")
 
         }

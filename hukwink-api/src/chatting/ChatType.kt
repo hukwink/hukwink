@@ -18,5 +18,6 @@ public open class ChatType(
     public companion object {
         public val PRIVATE_CHAT: ChatType = ChatType("PRIVATE_CHAT")
         public val GROUP_CHAT: ChatType = ChatType("GROUP_CHAT")
+        public val UNKNOWN_CHAT_TYPE: ChatType = ChatType("<UNKNOWN>")
     }
 }

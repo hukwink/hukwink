@@ -43,6 +43,7 @@ internal class LarksuiteResourceExposeAdapter(
                     HttpMethod.GET,
                     "/open-apis/im/v1/messages/$messageId/resources/$fileKey?type=$resType"
                 ).coAwait()
+                    .setFollowRedirects(true)
                     .larksuiteAuthorization(bot).send().coAwait()
 
                 ctx.response().setStatusCode(replied.statusCode())

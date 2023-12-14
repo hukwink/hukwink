@@ -1,6 +1,7 @@
 package com.hukwink.hukwink.adapter.larksuite
 
 import com.hukwink.hukwink.Bot
+import com.hukwink.hukwink.adapter.larksuite.chatting.LarksuiteChat
 import com.hukwink.hukwink.adapter.larksuite.http.LarksuiteHttpResponseProcess
 import com.hukwink.hukwink.adapter.larksuite.http.LarksuiteHttpResponseProcess.ensureOk
 import com.hukwink.hukwink.adapter.larksuite.http.LarksuiteHttpResponseProcess.parseToJsonAndVerify
@@ -12,6 +13,7 @@ import com.hukwink.hukwink.adapter.larksuite.proto.ProtoBotInfo
 import com.hukwink.hukwink.chatting.ChatId
 import com.hukwink.hukwink.chatting.ChatType
 import com.hukwink.hukwink.chatting.Chatting
+import com.hukwink.hukwink.contact.ChatInfo
 import com.hukwink.hukwink.event.engine.EventEngine
 import io.vertx.core.http.HttpClient
 import io.vertx.core.http.HttpMethod
@@ -71,7 +73,14 @@ public class LarksuiteBot(
     override fun close(reason: Throwable) {
     }
 
-    override fun openChat(type: ChatType, chatId: ChatId): Chatting {
-        TODO("Not yet implemented")
+    override fun openChat(chatId: ChatId): Chatting {
+        return LarksuiteChat(
+            bot = this,
+            chatType = ChatType.UNKNOWN_CHAT_TYPE,
+            chatInfo = object : ChatInfo {
+                override val chatId: ChatId get() = chatId
+                override val chatName: String get() = "<Unknown Outgoing Chat>"
+            }
+        )
     }
 }
