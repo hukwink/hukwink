@@ -1,5 +1,6 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 dependencies {
@@ -7,11 +8,14 @@ dependencies {
 
     api "org.jetbrains.kotlin:kotlin-reflect"
     api libs.kotlinx.coroutines.core
+    api libs.kotlinx.serialization.core
 
     api platform(libs.netty.platform)
 
     // https://mvnrepository.com/artifact/io.vertx/vertx-web
     api("io.vertx:vertx-web:4.5.0")
     api("io.vertx:vertx-lang-kotlin-coroutines:4.5.0")
+
+    testApi libs.kotlinx.serialization.json
 }
 

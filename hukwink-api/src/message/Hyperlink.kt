@@ -4,8 +4,8 @@ package com.hukwink.hukwink.message
 public open class Hyperlink
 @JvmOverloads
 public constructor(
-    content: String,
-    public val hyperlink: String,
+    content: CharSequence,
+    public val hyperlink: CharSequence,
     styles: Set<PlainText.Style> = emptySet(),
 ) : PlainText(content, styles) {
 

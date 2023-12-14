@@ -10,6 +10,13 @@ public object MessageUtil {
     @JvmStatic
     public fun emptyMessageChain(): MessageChain = emptyMessageChain
 
+    @JvmSynthetic
+    public fun messageChainOf(): MessageChain = emptyMessageChain
+
+    @JvmSynthetic
+    public fun messageChainOf(vararg elm: Message): MessageChain = elm.iterator().toMessageChain()
+
+
     @JvmStatic
     public fun Sequence<@JvmWildcard Message>.toMessageChain(): MessageChain {
         return iterator().toMessageChain()
