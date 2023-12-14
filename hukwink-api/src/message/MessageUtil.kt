@@ -39,7 +39,7 @@ public object MessageUtil {
         val metadata = elms.removeAllAndPick { it is MessageMetadata } as List<MessageMetadata>
         elms.removeAll { it !is MessageElement }
 
-        val metadataMap = mutableMapOf<MessageMetadataKey<*>, MessageMetadata>()
+        val metadataMap = linkedMapOf<MessageMetadataKey<*>, MessageMetadata>()
         metadata.forEach { mt ->
             mt.key.keyChain.forEach { key ->
 

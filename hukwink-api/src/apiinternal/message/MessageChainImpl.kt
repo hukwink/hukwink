@@ -10,8 +10,8 @@ internal class MessageChainImpl(
     private val metadataMap: Map<MessageMetadataKey<*>, MessageMetadata>,
     override val content: List<MessageElement>,
 ) : MessageChain {
-    override val metadata: Collection<MessageMetadata> by lazy {
-        metadataMap.values.toSet()
+    override val metadata: List<MessageMetadata> by lazy {
+        metadataMap.values.asSequence().distinct().toList()
     }
 
     override fun <T> get(key: MessageMetadataKey<T>): T? {
