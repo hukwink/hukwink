@@ -75,7 +75,7 @@ public class LarksuiteChat(
                     currentLine.add(buildJsonObject {
                         put("tag", "a")
                         put("text", elm.content.toString())
-                        put("href", elm.hyperlink)
+                        put("href", elm.hyperlink.toString())
                         val styles = elm.styles.toJson()
                         if (styles.isNotEmpty()) {
                             put("style", JsonArray(styles))
