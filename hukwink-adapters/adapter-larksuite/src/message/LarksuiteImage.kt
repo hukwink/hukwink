@@ -13,4 +13,12 @@ internal class LarksuiteImage(
 
     override val fileKey: String
         get() = imageId
+
+    override fun contentToString(): String {
+        return "[image:$imageId]"
+    }
+
+    override fun toString(): String {
+        return "[image:$imageId,$messageId]"
+    }
 }

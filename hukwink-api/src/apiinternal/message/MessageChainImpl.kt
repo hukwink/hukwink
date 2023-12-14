@@ -4,6 +4,7 @@ import com.hukwink.hukwink.message.MessageChain
 import com.hukwink.hukwink.message.MessageElement
 import com.hukwink.hukwink.message.MessageMetadata
 import com.hukwink.hukwink.message.MessageMetadataKey
+import com.hukwink.hukwink.message.MessageUtil.asSequence
 
 internal class MessageChainImpl(
     private val metadataMap: Map<MessageMetadataKey<*>, MessageMetadata>,
@@ -17,4 +18,15 @@ internal class MessageChainImpl(
         @Suppress("UNCHECKED_CAST")
         return metadataMap[key] as T?
     }
+
+
+    private val toStringCache by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        return@lazy asSequence().joinToString { it.toString() }
+    }
+    private val contentToStringCache by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        return@lazy content.joinToString { it.contentToString() }
+    }
+
+    override fun contentToString(): String = contentToStringCache
+    override fun toString(): String = toStringCache
 }

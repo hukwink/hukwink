@@ -12,6 +12,13 @@ public class LarksuiteReplyInfo(
 
     public companion object Key : MessageMetadataKey<LarksuiteReplyInfo>(MessageQuoteReply)
 
+
+    override fun toString(): String {
+        return "[reply:$parentId, root=$rootId]"
+    }
+
+    override fun contentToString(): String = ""
+
     override val replyMessageId: String
         get() = parentId
 }

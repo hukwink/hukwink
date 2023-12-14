@@ -19,4 +19,10 @@ public class LarksuiteMessageSource(
             rootId = rootId.ifEmpty { messageId }
         )
     }
+
+    override fun toString(): String {
+        return "[source:$messageId, parent=$parentId, root=$rootId]"
+    }
+
+    override fun contentToString(): String = ""
 }

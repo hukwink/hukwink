@@ -4,5 +4,8 @@ import com.hukwink.hukwink.message.MessageElement
 
 internal class InternalAt(
     val user_id: String,
-): MessageElement {
+) : MessageElement {
+    override fun contentToString(): String = ""
+
+    override fun toString(): String = "[@$user_id]"
 }

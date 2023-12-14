@@ -5,6 +5,10 @@ public open class PlainText @JvmOverloads public constructor(
     public val content: CharSequence,
     public val styles: Set<PlainText.Style> = emptySet(),
 ) : MessageElement {
+    override fun contentToString(): String {
+        return content.toString()
+    }
+
     override fun toString(): String {
         return content.toString()
     }

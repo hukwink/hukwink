@@ -8,4 +8,8 @@ internal class LarksuiteFile(
     public val isFolder: Boolean,
     public val messageId: String,
 ) : MessageElement {
+    override fun contentToString(): String = "[file:$fileName]"
+    override fun toString(): String {
+        return contentToString()
+    }
 }
