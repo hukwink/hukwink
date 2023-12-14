@@ -1,10 +1,7 @@
 package com.hukwink.hukwink.message.serialization
 
 import com.hukwink.hukwink.apiinternal.serialization.*
-import com.hukwink.hukwink.message.Hyperlink
-import com.hukwink.hukwink.message.Mention
-import com.hukwink.hukwink.message.Message
-import com.hukwink.hukwink.message.PlainText
+import com.hukwink.hukwink.message.*
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationStrategy
@@ -51,6 +48,11 @@ private constructor(
         register(PlainText::class.java, PlainTextSerializer)
         register(Hyperlink::class.java, HyperlinkSerializer)
         register(Mention::class.java, MentionSerializer)
+
+        register(
+            MessageChain::class.java,
+            MessageChainAsSingleMessageSerializer
+        )
     }
 
     public fun mirror(): HukwinkMessageSerialization {
@@ -76,7 +78,10 @@ private constructor(
 
     private inner class SerializerProvider : (Message) -> SerializationStrategy<Message>? {
         override fun invoke(p1: Message): SerializationStrategy<Message>? {
-            val innerSerializer = getSerializer(p1.javaClass) ?: return null
+            val innerSerializer = when (p1) {
+                is MessageChain -> getSerializer(p1.javaClass) ?: getSerializer(MessageChain::class.java)
+                else -> getSerializer(p1.javaClass)
+            } ?: return null
 
             return MessageSerializationStrategyWithLayout(innerSerializer)
         }
