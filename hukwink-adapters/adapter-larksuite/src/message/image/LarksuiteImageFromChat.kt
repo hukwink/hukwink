@@ -1,10 +1,10 @@
-package com.hukwink.hukwink.adapter.larksuite.message
+package com.hukwink.hukwink.adapter.larksuite.message.image
 
 import com.hukwink.hukwink.adapter.larksuite.resource.FromMessageResource
 import com.hukwink.hukwink.message.Image
 import com.hukwink.hukwink.message.MessageElement
 
-internal class LarksuiteImage(
+internal class LarksuiteImageFromChat(
     public val imageId: String,
     public override val messageId: String,
 ) : FromMessageResource(), MessageElement, Image {

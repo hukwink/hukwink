@@ -2,6 +2,7 @@ package com.hukwink.hukwink.adapter.larksuite.http
 
 import io.vertx.core.buffer.Buffer
 import io.vertx.core.http.HttpClientResponse
+import io.vertx.ext.web.client.HttpResponse
 import io.vertx.kotlin.coroutines.coAwait
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -19,6 +20,13 @@ internal object LarksuiteHttpResponseProcess {
     suspend fun HttpClientResponse.ensureOk(): HttpClientResponse {
         if (statusCode() != 200) {
             error("Bad status code: ${statusCode()}, ${body().coAwait().toString(Charsets.UTF_8)}")
+        }
+        return this
+    }
+
+    fun <T : HttpResponse<*>> T.ensureOk(): T {
+        if (statusCode() != 200) {
+            error("Bad status code: ${statusCode()}, ${bodyAsString()}")
         }
         return this
     }

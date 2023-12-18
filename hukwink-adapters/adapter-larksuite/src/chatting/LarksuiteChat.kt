@@ -6,9 +6,10 @@ import com.hukwink.hukwink.adapter.larksuite.http.LarksuiteHttpResponseProcess.e
 import com.hukwink.hukwink.adapter.larksuite.http.LarksuiteHttpResponseProcess.parseToJsonAndVerify
 import com.hukwink.hukwink.adapter.larksuite.http.larksuiteAuthorization
 import com.hukwink.hukwink.adapter.larksuite.message.LarksuiteEmotion
-import com.hukwink.hukwink.adapter.larksuite.message.LarksuiteImage
 import com.hukwink.hukwink.adapter.larksuite.message.LarksuiteMessageTitle
 import com.hukwink.hukwink.adapter.larksuite.message.LarksuiteReplyInfo
+import com.hukwink.hukwink.adapter.larksuite.message.image.LarksuiteImageFromChat
+import com.hukwink.hukwink.adapter.larksuite.message.image.LarksuiteImageUploaded
 import com.hukwink.hukwink.adapter.larksuite.proto.ProtoSendMessageReply
 import com.hukwink.hukwink.chatting.ChatType
 import com.hukwink.hukwink.chatting.Chatting
@@ -90,7 +91,14 @@ public class LarksuiteChat(
                     })
                 }
 
-                if (elm is LarksuiteImage) {
+                if (elm is LarksuiteImageFromChat) {
+                    currentLine.add(buildJsonObject {
+                        put("tag", "img")
+                        put("image_key", elm.imageId)
+                    })
+                }
+
+                if (elm is LarksuiteImageUploaded) {
                     currentLine.add(buildJsonObject {
                         put("tag", "img")
                         put("image_key", elm.imageId)

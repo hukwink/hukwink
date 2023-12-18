@@ -3,6 +3,7 @@ package com.hukwink.hukwink.adapter.larksuite.http
 import com.hukwink.hukwink.adapter.larksuite.LarksuiteBot
 import io.vertx.core.http.HttpClientRequest
 import io.vertx.core.http.HttpMethod
+import io.vertx.ext.web.client.HttpRequest
 import io.vertx.kotlin.coroutines.coAwait
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -52,5 +53,9 @@ internal class LarksuiteTokenKeepHolder(
 }
 
 internal fun HttpClientRequest.larksuiteAuthorization(bot: LarksuiteBot) = apply {
+    putHeader("Authorization", "Bearer ${bot.tokenKeepHolder.accessToken}")
+}
+
+internal fun <ST : Any?, T : HttpRequest<ST>> T.larksuiteAuthorization(bot: LarksuiteBot) = apply {
     putHeader("Authorization", "Bearer ${bot.tokenKeepHolder.accessToken}")
 }

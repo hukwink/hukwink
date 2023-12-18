@@ -8,15 +8,20 @@ import com.hukwink.hukwink.adapter.larksuite.http.LarksuiteHttpResponseProcess.p
 import com.hukwink.hukwink.adapter.larksuite.http.LarksuiteResourceExposeAdapter
 import com.hukwink.hukwink.adapter.larksuite.http.LarksuiteTokenKeepHolder
 import com.hukwink.hukwink.adapter.larksuite.http.larksuiteAuthorization
+import com.hukwink.hukwink.adapter.larksuite.message.image.LarksuiteImageUploaded
 import com.hukwink.hukwink.adapter.larksuite.netprocess.EventProcessorRegistry
 import com.hukwink.hukwink.adapter.larksuite.proto.ProtoBotInfo
+import com.hukwink.hukwink.adapter.larksuite.resource.ResourcesCacheManager
 import com.hukwink.hukwink.chatting.ChatId
 import com.hukwink.hukwink.chatting.ChatType
 import com.hukwink.hukwink.chatting.Chatting
 import com.hukwink.hukwink.contact.ChatInfo
 import com.hukwink.hukwink.event.engine.EventEngine
+import com.hukwink.hukwink.message.Image
+import com.hukwink.hukwink.resource.LocalResource
 import io.vertx.core.http.HttpClient
 import io.vertx.core.http.HttpMethod
+import io.vertx.ext.web.client.WebClient
 import io.vertx.kotlin.coroutines.coAwait
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
@@ -26,12 +31,14 @@ public class LarksuiteBot(
     override val coroutineScope: CoroutineScope,
 
     internal val httpClient: HttpClient,
+    internal val webClient: WebClient,
 ) : Bot {
     override val eventEngine: EventEngine get() = configuration.eventEngine
 
     public val eventProcessorRegistry: EventProcessorRegistry = EventProcessorRegistry()
     internal val tokenKeepHolder = LarksuiteTokenKeepHolder(this)
     internal val larksuiteResourceExposeAdapter = LarksuiteResourceExposeAdapter(this)
+    internal val resourcesCacheManager = ResourcesCacheManager(this)
 
     internal val logger get() = configuration.logger
 
@@ -64,6 +71,7 @@ public class LarksuiteBot(
         this.botId = protoBotInfo.open_id
         this.botName = protoBotInfo.app_name
 
+        resourcesCacheManager.initialize()
     }
 
     override fun close() {
@@ -82,5 +90,18 @@ public class LarksuiteBot(
                 override val chatName: String get() = "<Unknown Outgoing Chat>"
             }
         )
+    }
+
+
+    internal suspend fun uploadImageImpl(resource: LocalResource): String {
+        return resourcesCacheManager.upload(resource, ResourcesCacheManager.SubType.IMAGE)
+    }
+
+    internal suspend fun uploadFileImpl(resource: LocalResource): String {
+        return resourcesCacheManager.upload(resource, ResourcesCacheManager.SubType.FILE)
+    }
+
+    public suspend fun uploadImage(resource: LocalResource): Image {
+        return LarksuiteImageUploaded(uploadImageImpl(resource))
     }
 }

@@ -2,11 +2,11 @@ package com.hukwink.hukwink.adapter.larksuite
 
 import com.hukwink.hukwink.Bot
 import com.hukwink.hukwink.BotFactory
-import com.hukwink.hukwink.adapter.larksuite.netprocess.DebugPrintProcessor
 import com.hukwink.hukwink.adapter.larksuite.netprocess.LarksuiteWebhookProcessor
 import com.hukwink.hukwink.config.BotConfiguration
 import com.hukwink.hukwink.util.childScope
 import io.vertx.core.http.HttpClientOptions
+import io.vertx.ext.web.client.WebClient
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.job
 
@@ -31,7 +31,8 @@ public class LarksuiteBotFactory : BotFactory {
             val botImpl = LarksuiteBot(
                 configuration,
                 botScope,
-                httpClient
+                httpClient,
+                webClient = WebClient.wrap(httpClient),
             )
             LarksuiteWebhookProcessor(botImpl).register()
 

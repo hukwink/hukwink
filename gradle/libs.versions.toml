@@ -10,6 +10,7 @@ kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 netty-platform = { module = "io.netty:netty-bom", version.ref = "netty" }
 
 gson = "com.google.code.gson:gson:2.10.1"
+h2database = "com.h2database:h2:2.2.224"
 
 [versions]
 netty = "4.1.101.Final"

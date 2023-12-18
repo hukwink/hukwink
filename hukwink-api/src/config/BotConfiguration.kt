@@ -7,6 +7,7 @@ import com.hukwink.hukwink.httpd.HttpServerDaemon
 import com.hukwink.hukwink.util.lazyMutable
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.io.File
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -21,4 +22,7 @@ public open class BotConfiguration {
     public var parentContext: CoroutineContext = EmptyCoroutineContext
 
     public var httpServerDaemon: HttpServerDaemon by lazyMutable { error("Http Server Daemon not setup") }
+
+    public var dataFolder: File by lazyMutable { File("bot-data") }
+    public var cacheFolder: File by lazyMutable { dataFolder.resolve("cache") }
 }

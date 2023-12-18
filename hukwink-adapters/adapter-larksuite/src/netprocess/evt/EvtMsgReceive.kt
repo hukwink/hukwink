@@ -7,6 +7,7 @@ import com.hukwink.hukwink.adapter.larksuite.http.LarksuiteHttpResponseProcess
 import com.hukwink.hukwink.adapter.larksuite.message.*
 import com.hukwink.hukwink.adapter.larksuite.message.InternalAt
 import com.hukwink.hukwink.adapter.larksuite.message.InternalLineSpliterator
+import com.hukwink.hukwink.adapter.larksuite.message.image.LarksuiteImageFromChat
 import com.hukwink.hukwink.adapter.larksuite.netprocess.v2.MsgV2Header
 import com.hukwink.hukwink.adapter.larksuite.netprocess.v2.MsgV2Processor
 import com.hukwink.hukwink.adapter.larksuite.proto.ProtoEventReceiveMessage
@@ -112,7 +113,7 @@ private fun ProtoEventReceiveMessage.Message.parse(bot: LarksuiteBot): MessageCh
                         }
                         "at" -> yield(InternalAt(subElm["user_id"]?.jsonPrimitive?.content.orEmpty()))
                         "img" -> yield(
-                            LarksuiteImage(
+                            LarksuiteImageFromChat(
                                 imageId = subElm["image_key"]?.jsonPrimitive?.content.orEmpty(),
                                 messageId = message_id,
                             )
@@ -133,7 +134,7 @@ private fun ProtoEventReceiveMessage.Message.parse(bot: LarksuiteBot): MessageCh
             }
         }
         "image" -> sequenceOf(
-            LarksuiteImage(
+            LarksuiteImageFromChat(
                 imageId = jsonElm["image_key"]?.jsonPrimitive?.content.orEmpty(),
                 messageId = message_id,
             )

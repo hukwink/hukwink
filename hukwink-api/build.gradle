@@ -14,6 +14,7 @@ dependencies {
 
     // https://mvnrepository.com/artifact/io.vertx/vertx-web
     api("io.vertx:vertx-web:4.5.0")
+    api("io.vertx:vertx-web-client:4.5.0")
     api("io.vertx:vertx-lang-kotlin-coroutines:4.5.0")
 
     testApi libs.kotlinx.serialization.json
