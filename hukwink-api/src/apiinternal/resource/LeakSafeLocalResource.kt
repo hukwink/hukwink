@@ -1,6 +1,7 @@
 package com.hukwink.hukwink.apiinternal.resource
 
 import com.hukwink.hukwink.resource.LocalResource
+import com.hukwink.hukwink.util.systemProp
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.lang.ref.Cleaner
@@ -19,7 +20,7 @@ internal class LeakSafeLocalResource(
 
     companion object {
         val logger: Logger by lazy { LoggerFactory.getLogger(LeakSafeLocalResource::class.java) }
-        val tracing: Boolean by lazy { System.getProperty("hukwink.resource.leak-create-point").toBoolean() }
+        private val tracing: Boolean by lazy { systemProp("hukwink.resource.leak-create-point", false) }
 
         fun of(resource: LocalResource): LocalResource {
             if (resource.isLeakObservable) return resource
@@ -27,7 +28,7 @@ internal class LeakSafeLocalResource(
             val innerAction = InnerActionWrap(resource)
             val outerResource = LeakSafeLocalResource(innerAction)
 
-            outerResource.cleanerHandle = GlobalCleaner.cleaner.register(
+            outerResource.cleanerHandle = LocalResourceGlobalValues.cleaner.register(
                 outerResource, innerAction
             )
             if (tracing) {

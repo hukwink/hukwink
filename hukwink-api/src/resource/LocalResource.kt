@@ -1,10 +1,13 @@
 package com.hukwink.hukwink.resource
 
-import com.hukwink.hukwink.apiinternal.resource.AutoClosableLocalResource
-import com.hukwink.hukwink.apiinternal.resource.LeakSafeLocalResource
+import com.hukwink.hukwink.apiinternal.resource.*
+import com.hukwink.hukwink.apiinternal.resource.LocalResourceGlobalValues.builtinLeakObservable
+import io.netty.buffer.ByteBuf
 import java.io.Closeable
+import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.nio.file.Path
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -29,9 +32,46 @@ public interface LocalResource : Closeable {
     public fun withLeakObserver(): LocalResource {
         return LeakSafeLocalResource.of(this)
     }
+
+    public companion object {
+        @JvmStatic
+        public fun LocalResource.withFileName(name: String): LocalResource {
+            if (fileName == name) return this
+            return NameChangedLocalResource(this, name)
+        }
+
+        @JvmStatic
+        @JvmOverloads
+        public fun wrap(
+            fileName: String,
+            content: ByteArray,
+            offset: Int = 0,
+            length: Int = content.size,
+        ): LocalResource {
+            return ByteArrayLocalResource(content = content, offset = offset, length = length, fileName = fileName)
+        }
+
+        @JvmStatic
+        public fun wrap(fileName: String, buffer: ByteBuf): LocalResource {
+            return ByteBufLocalResource(fileName = fileName, byteBuf = buffer)
+        }
+
+
+        @JvmStatic
+        public fun open(fileName: String, buffer: ByteBuf): LocalResource {
+            return ByteBufLocalResource(fileName = fileName, byteBuf = buffer).builtinLeakObservable()
+        }
+
+        @JvmStatic
+        public fun open(path: Path): LocalResource = LocalFileSystemLocalResource(path).builtinLeakObservable()
+
+        @JvmStatic
+        public fun open(file: File): LocalResource = open(file.toPath())
+    }
 }
 
 @OptIn(ExperimentalContracts::class)
+@JvmSynthetic
 public inline fun <T> LocalResource.withAutoUse(block: (LocalResource) -> T): T {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
