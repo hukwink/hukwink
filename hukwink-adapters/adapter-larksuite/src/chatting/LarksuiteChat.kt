@@ -8,18 +8,15 @@ import com.hukwink.hukwink.adapter.larksuite.http.larksuiteAuthorization
 import com.hukwink.hukwink.adapter.larksuite.message.LarksuiteEmotion
 import com.hukwink.hukwink.adapter.larksuite.message.LarksuiteMessageTitle
 import com.hukwink.hukwink.adapter.larksuite.message.LarksuiteReplyInfo
-import com.hukwink.hukwink.adapter.larksuite.message.image.LarksuiteImageFromChat
+import com.hukwink.hukwink.adapter.larksuite.message.file.LarksuiteFileUploaded
 import com.hukwink.hukwink.adapter.larksuite.message.image.LarksuiteImageUploaded
 import com.hukwink.hukwink.adapter.larksuite.proto.ProtoSendMessageReply
 import com.hukwink.hukwink.chatting.ChatType
 import com.hukwink.hukwink.chatting.Chatting
 import com.hukwink.hukwink.chatting.MessageReceipt
 import com.hukwink.hukwink.contact.ChatInfo
-import com.hukwink.hukwink.message.Hyperlink
-import com.hukwink.hukwink.message.Mention
-import com.hukwink.hukwink.message.Message
+import com.hukwink.hukwink.message.*
 import com.hukwink.hukwink.message.MessageUtil.toMessageChain
-import com.hukwink.hukwink.message.PlainText
 import io.vertx.core.http.HttpMethod
 import io.vertx.kotlin.coroutines.coAwait
 import kotlinx.serialization.json.*
@@ -91,18 +88,15 @@ public class LarksuiteChat(
                     })
                 }
 
-                if (elm is LarksuiteImageFromChat) {
-                    currentLine.add(buildJsonObject {
-                        put("tag", "img")
-                        put("image_key", elm.imageId)
-                    })
-                }
-
-                if (elm is LarksuiteImageUploaded) {
-                    currentLine.add(buildJsonObject {
-                        put("tag", "img")
-                        put("image_key", elm.imageId)
-                    })
+                if (elm is Image) {
+                    if (elm is LarksuiteImageUploaded) {
+                        currentLine.add(buildJsonObject {
+                            put("tag", "img")
+                            put("image_key", elm.imageId)
+                        })
+                    } else {
+                        // TODO
+                    }
                 }
 
                 if (elm is LarksuiteEmotion) {
@@ -110,6 +104,14 @@ public class LarksuiteChat(
                         put("tag", "img")
                         put("emoji_type", elm.emojiType)
                     })
+                }
+                if (elm is File) {
+                    if (elm is LarksuiteFileUploaded) {
+                        currentLine.add(buildJsonObject {
+                            put("tag", "file")
+                            put("file_key", elm.fileId)
+                        })
+                    }
                 }
             }
 

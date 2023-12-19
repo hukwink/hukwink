@@ -7,6 +7,7 @@ import com.hukwink.hukwink.adapter.larksuite.http.LarksuiteHttpResponseProcess
 import com.hukwink.hukwink.adapter.larksuite.message.*
 import com.hukwink.hukwink.adapter.larksuite.message.InternalAt
 import com.hukwink.hukwink.adapter.larksuite.message.InternalLineSpliterator
+import com.hukwink.hukwink.adapter.larksuite.message.file.LarksuiteFileFromChat
 import com.hukwink.hukwink.adapter.larksuite.message.image.LarksuiteImageFromChat
 import com.hukwink.hukwink.adapter.larksuite.netprocess.v2.MsgV2Header
 import com.hukwink.hukwink.adapter.larksuite.netprocess.v2.MsgV2Processor
@@ -140,7 +141,7 @@ private fun ProtoEventReceiveMessage.Message.parse(bot: LarksuiteBot): MessageCh
             )
         )
         "file", "folder" -> sequenceOf(
-            LarksuiteFile(
+            LarksuiteFileFromChat(
                 fileKey = jsonElm["file_key"]?.jsonPrimitive?.content.orEmpty(),
                 fileName = jsonElm["file_name"]?.jsonPrimitive?.content.orEmpty(),
                 isFolder = message_type == "folder",

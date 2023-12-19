@@ -8,6 +8,7 @@ import com.hukwink.hukwink.adapter.larksuite.http.LarksuiteHttpResponseProcess.p
 import com.hukwink.hukwink.adapter.larksuite.http.LarksuiteResourceExposeAdapter
 import com.hukwink.hukwink.adapter.larksuite.http.LarksuiteTokenKeepHolder
 import com.hukwink.hukwink.adapter.larksuite.http.larksuiteAuthorization
+import com.hukwink.hukwink.adapter.larksuite.message.file.LarksuiteFileUploaded
 import com.hukwink.hukwink.adapter.larksuite.message.image.LarksuiteImageUploaded
 import com.hukwink.hukwink.adapter.larksuite.netprocess.EventProcessorRegistry
 import com.hukwink.hukwink.adapter.larksuite.proto.ProtoBotInfo
@@ -17,6 +18,7 @@ import com.hukwink.hukwink.chatting.ChatType
 import com.hukwink.hukwink.chatting.Chatting
 import com.hukwink.hukwink.contact.ChatInfo
 import com.hukwink.hukwink.event.engine.EventEngine
+import com.hukwink.hukwink.message.File
 import com.hukwink.hukwink.message.Image
 import com.hukwink.hukwink.resource.LocalResource
 import io.vertx.core.http.HttpClient
@@ -103,5 +105,9 @@ public class LarksuiteBot(
 
     public suspend fun uploadImage(resource: LocalResource): Image {
         return LarksuiteImageUploaded(uploadImageImpl(resource))
+    }
+
+    public suspend fun uploadFile(resource: LocalResource): File {
+        return LarksuiteFileUploaded(fileId = uploadFileImpl(resource), fileName = resource.fileName)
     }
 }
