@@ -33,11 +33,10 @@ internal class ResourcesCacheManager(
 
     fun initialize() {
         databaseSource.connection.use { conn ->
-            kotlin.runCatching {
-                conn.createStatement().use { stat ->
-                    stat.executeUpdate(
-                        """
-create table uploaded_resources
+            conn.createStatement().use { stat ->
+                stat.executeUpdate(
+                    """
+create table IF NOT EXISTS uploaded_resources
 (
     file_type            varchar(8),
     file_sha1            binary(20),
@@ -48,8 +47,7 @@ create table uploaded_resources
         primary key (file_type, file_sha1, file_md5, file_size)
 );
                 """
-                    )
-                }
+                )
             }
         }
     }
