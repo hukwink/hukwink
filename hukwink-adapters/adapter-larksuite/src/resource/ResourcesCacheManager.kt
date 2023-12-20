@@ -42,9 +42,10 @@ create table IF NOT EXISTS uploaded_resources
     file_sha1            binary(20),
     file_md5             binary(16),
     file_size            long,
+    file_name            varchar(256),
     uploaded_resource_id varchar(256),
     constraint uploaded_resources_pk
-        primary key (file_type, file_sha1, file_md5, file_size)
+        primary key (file_type, file_sha1, file_md5, file_size, file_name)
 );
                 """
                 )
@@ -54,18 +55,24 @@ create table IF NOT EXISTS uploaded_resources
 
     suspend fun upload(resource: LocalResource, subType: SubType): String = resource.withAutoUse {
         databaseSource.connection.use { conn ->
+            val providedName = when (subType) {
+                SubType.IMAGE -> ""
+                SubType.FILE -> resource.fileName
+            }
             conn.prepareStatement(
                 """SELECT uploaded_resource_id from uploaded_resources
                 |where file_md5 = ?
                 |and file_sha1 = ?
                 |and file_size = ?
                 |and file_type = ?
+                |and file_name = ?
                 |""".trimMargin()
             ).use { ps ->
                 ps.setBytes(1, resource.md5)
                 ps.setBytes(2, resource.sha1)
                 ps.setLong(3, resource.size)
                 ps.setString(4, subType.dbType)
+                ps.setString(5, providedName)
                 ps.executeQuery().use { result ->
                     if (result.next()) {
                         return@withAutoUse result.getString(1)
@@ -81,7 +88,7 @@ create table IF NOT EXISTS uploaded_resources
             val uploadReply = when (subType) {
                 SubType.IMAGE -> {
                     multiPartForm.binaryFileUpload(
-                        "image", resource.fileName, resource.openStream().use { Buffer.buffer(it.readAllBytes()) },
+                        "image", providedName, resource.openStream().use { Buffer.buffer(it.readAllBytes()) },
                         "application/octet-stream"
                     ).attribute("image_type", "message")
                     bot.webClient
@@ -89,7 +96,7 @@ create table IF NOT EXISTS uploaded_resources
                 }
                 SubType.FILE -> {
                     multiPartForm.binaryFileUpload(
-                        "file", resource.fileName, resource.openStream().use { Buffer.buffer(it.readAllBytes()) },
+                        "file", providedName, resource.openStream().use { Buffer.buffer(it.readAllBytes()) },
                         "application/octet-stream"
                     )
                         .attribute("file_type", "stream")
@@ -113,14 +120,15 @@ create table IF NOT EXISTS uploaded_resources
             kotlin.runCatching {
                 conn.prepareStatement(
                     "INSERT INTO uploaded_resources (" +
-                        "file_sha1, file_md5, file_size, file_type, uploaded_resource_id" +
-                        ") values ( ?, ?, ?, ?, ? )"
+                        "file_sha1, file_md5, file_size, file_type, uploaded_resource_id, file_name" +
+                        ") values ( ?, ?, ?, ?, ?, ? )"
                 ).use { ps ->
                     ps.setBytes(1, resource.sha1)
                     ps.setBytes(2, resource.md5)
                     ps.setLong(3, resource.size)
                     ps.setString(4, subType.dbType)
                     ps.setString(5, resourceKey)
+                    ps.setString(6, providedName)
                     ps.executeUpdate()
                 }
             }
