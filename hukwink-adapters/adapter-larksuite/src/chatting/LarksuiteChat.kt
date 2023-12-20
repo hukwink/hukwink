@@ -8,6 +8,7 @@ import com.hukwink.hukwink.adapter.larksuite.http.larksuiteAuthorization
 import com.hukwink.hukwink.adapter.larksuite.message.LarksuiteEmotion
 import com.hukwink.hukwink.adapter.larksuite.message.LarksuiteMessageTitle
 import com.hukwink.hukwink.adapter.larksuite.message.LarksuiteReplyInfo
+import com.hukwink.hukwink.adapter.larksuite.message.LarksuiteSticker
 import com.hukwink.hukwink.adapter.larksuite.message.file.LarksuiteFileUploaded
 import com.hukwink.hukwink.adapter.larksuite.message.image.LarksuiteImageUploaded
 import com.hukwink.hukwink.adapter.larksuite.proto.ProtoSendMessageReply
@@ -50,6 +51,34 @@ public class LarksuiteChat(
             if (chain.content.size == 1) {
                 val singleElm = chain.content[0]
                 // TODO single element special
+                if (singleElm is Image) {
+                    if (singleElm is LarksuiteImageUploaded) {
+                        msgSent["msg_type"] = JsonPrimitive("image")
+                        msgSent["content"] = JsonPrimitive(buildJsonObject {
+                            put("image_key", singleElm.imageId)
+                        }.toString())
+
+                        return@msgEncode
+                    }
+                }
+                if (singleElm is File) {
+                    if (singleElm is LarksuiteFileUploaded) {
+                        msgSent["msg_type"] = JsonPrimitive("file")
+                        msgSent["content"] = JsonPrimitive(buildJsonObject {
+                            put("file_key", singleElm.fileId)
+                        }.toString())
+
+                        return@msgEncode
+                    }
+                }
+                if (singleElm is LarksuiteSticker) {
+                    msgSent["msg_type"] = JsonPrimitive("sticker")
+                    msgSent["content"] = JsonPrimitive(buildJsonObject {
+                        put("file_key", singleElm.fileKey)
+                    }.toString())
+
+                    return@msgEncode
+                }
             }
 
             val lines = mutableListOf<JsonArray>()
