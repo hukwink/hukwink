@@ -21,6 +21,7 @@ public interface LocalResource : Closeable {
     public val isAutoClosable: Boolean get() = false
     public val isLeakObservable: Boolean get() = false
 
+    public val origin: LocalResourceOrigin get() = LocalResourceOrigin.Unknown
 
     @Throws(IOException::class)
     public fun openStream(): InputStream
