@@ -166,4 +166,8 @@ public class LarksuiteChat(
             sentTime = replyObj.data.create_time.toLongOrNull() ?: System.currentTimeMillis(),
         )
     }
+
+    override suspend fun uploadImage(resource: LocalResource): Image {
+        return bot.uploadImage(resource)
+    }
 }
