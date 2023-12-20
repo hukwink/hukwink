@@ -37,7 +37,7 @@ public interface LocalResource : Closeable {
     public companion object {
         @JvmStatic
         public fun LocalResource.withFileName(name: String): LocalResource {
-            if (fileName == name) return this
+            //if (fileName == name) return this
             return NameChangedLocalResource(this, name)
         }
 
