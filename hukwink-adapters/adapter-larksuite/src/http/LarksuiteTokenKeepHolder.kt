@@ -1,6 +1,7 @@
 package com.hukwink.hukwink.adapter.larksuite.http
 
 import com.hukwink.hukwink.adapter.larksuite.LarksuiteBot
+import io.vertx.core.buffer.Buffer
 import io.vertx.core.http.HttpClientRequest
 import io.vertx.core.http.HttpMethod
 import io.vertx.ext.web.client.HttpRequest
@@ -19,15 +20,15 @@ internal class LarksuiteTokenKeepHolder(
         private set
 
     suspend fun refreshToken() {
-        val request = bot.httpClient.request(
+        val request = bot.webClient.request(
             HttpMethod.POST, "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
-        ).coAwait()
+        )
         request.putHeader("Content-Type", "application/json; charset=utf-8")
-        val response = request.send("{\"app_id\":\"$appid\",\"app_secret\":\"$appsec\"}").coAwait()
+        val response = request.sendBuffer(Buffer.buffer("{\"app_id\":\"$appid\",\"app_secret\":\"$appsec\"}")).coAwait()
         if (response.statusCode() != 200) {
             throw IllegalStateException("Bad code status: ${response.statusCode()}")
         }
-        val responseBody = response.body().coAwait()
+        val responseBody = response.body()
         val responseObject = kotlin.runCatching {
             Json.Default.decodeFromString(
                 JsonObject.serializer(), responseBody.toString(Charsets.UTF_8)

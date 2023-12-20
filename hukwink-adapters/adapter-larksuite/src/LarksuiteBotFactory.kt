@@ -6,9 +6,11 @@ import com.hukwink.hukwink.adapter.larksuite.netprocess.LarksuiteWebhookProcesso
 import com.hukwink.hukwink.config.BotConfiguration
 import com.hukwink.hukwink.util.childScope
 import io.vertx.core.http.HttpClientOptions
+import io.vertx.core.http.HttpVersion
 import io.vertx.ext.web.client.WebClient
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.job
+import java.util.concurrent.TimeUnit
 
 public class LarksuiteBotFactory : BotFactory {
     override fun createBot(configuration: BotConfiguration): Bot {
@@ -25,6 +27,9 @@ public class LarksuiteBotFactory : BotFactory {
                     .setSsl(true)
                     .setDefaultHost("open.feishu.cn")
                     .setDefaultPort(443)
+                    .setProtocolVersion(HttpVersion.HTTP_1_1)
+                    .setIdleTimeout(10)
+                    .setIdleTimeoutUnit(TimeUnit.SECONDS)
             )
             botScope.coroutineContext.job.invokeOnCompletion { httpClient.close() }
 

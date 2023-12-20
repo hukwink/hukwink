@@ -20,6 +20,7 @@ import com.hukwink.hukwink.contact.ChatInfo
 import com.hukwink.hukwink.message.*
 import com.hukwink.hukwink.message.MessageUtil.toMessageChain
 import com.hukwink.hukwink.resource.LocalResource
+import io.vertx.core.buffer.Buffer
 import io.vertx.core.http.HttpMethod
 import io.vertx.kotlin.coroutines.coAwait
 import kotlinx.serialization.json.*
@@ -170,15 +171,19 @@ public class LarksuiteChat(
 
         val httpRequest = if (replyTarget == null) {
             msgSent["receive_id"] = JsonPrimitive(chatInfo.chatId.chatId)
-            bot.httpClient.request(
+            bot.webClient.request(
                 HttpMethod.POST,
                 "/open-apis/im/v1/messages?receive_id_type=" + chatInfo.chatId.chatIdType
             )
         } else {
-            bot.httpClient.request(HttpMethod.POST, "/open-apis/im/v1/messages/${replyTarget.parentId}/reply")
-        }.coAwait().larksuiteAuthorization(bot)
-        val reply = httpRequest.send(Json.encodeToString(JsonObject.serializer(), JsonObject(msgSent))).coAwait()
-        val replyContent = reply.ensureOk().body().coAwait().parseToJsonAndVerify()
+            bot.webClient.request(HttpMethod.POST, "/open-apis/im/v1/messages/${replyTarget.parentId}/reply")
+        }.larksuiteAuthorization(bot)
+        val reply = httpRequest.sendBuffer(
+            Buffer.buffer(Json.encodeToString(JsonObject.serializer(), JsonObject(msgSent)))
+        ).coAwait()
+
+        val replyContent = reply.ensureOk().body().parseToJsonAndVerify()
+
 
         if (bot.configuration.webhookDebugPrint) {
             bot.logger.info(
