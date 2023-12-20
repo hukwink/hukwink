@@ -13,10 +13,12 @@ import com.hukwink.hukwink.adapter.larksuite.message.image.LarksuiteImageUploade
 import com.hukwink.hukwink.adapter.larksuite.proto.ProtoSendMessageReply
 import com.hukwink.hukwink.chatting.ChatType
 import com.hukwink.hukwink.chatting.Chatting
+import com.hukwink.hukwink.chatting.FileSupported
 import com.hukwink.hukwink.chatting.MessageReceipt
 import com.hukwink.hukwink.contact.ChatInfo
 import com.hukwink.hukwink.message.*
 import com.hukwink.hukwink.message.MessageUtil.toMessageChain
+import com.hukwink.hukwink.resource.LocalResource
 import io.vertx.core.http.HttpMethod
 import io.vertx.kotlin.coroutines.coAwait
 import kotlinx.serialization.json.*
@@ -25,7 +27,7 @@ public class LarksuiteChat(
     override val bot: LarksuiteBot,
     override val chatType: ChatType,
     override val chatInfo: ChatInfo,
-) : Chatting {
+) : Chatting, FileSupported {
 
     private fun Set<PlainText.Style>.toJson(): List<JsonPrimitive> = asSequence().mapNotNull { style ->
         when (style) {
@@ -169,5 +171,9 @@ public class LarksuiteChat(
 
     override suspend fun uploadImage(resource: LocalResource): Image {
         return bot.uploadImage(resource)
+    }
+
+    override suspend fun sendFile(resource: LocalResource): MessageReceipt {
+        return sendMessage(bot.uploadFile(resource))
     }
 }
