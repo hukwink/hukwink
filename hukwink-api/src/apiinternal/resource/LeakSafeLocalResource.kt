@@ -18,6 +18,18 @@ internal class LeakSafeLocalResource(
         cleanerHandle.clean() // dispose cleaner handle
     }
 
+    override fun toString(): String {
+        return "LeakSafeLocalResource[${delegate.delegate}]"
+    }
+
+    override fun toAutoClosable(): LocalResource {
+        return AutoClosableLocalResource.of(this)
+    }
+
+    override fun withLeakObserver(): LocalResource {
+        return this
+    }
+
     companion object {
         val logger: Logger by lazy { LoggerFactory.getLogger(LeakSafeLocalResource::class.java) }
         private val tracing: Boolean by lazy { systemProp("hukwink.resource.leak-create-point", false) }
@@ -41,7 +53,7 @@ internal class LeakSafeLocalResource(
 }
 
 internal class InnerActionWrap(
-    private val delegate: LocalResource
+    val delegate: LocalResource
 ) : LocalResource by delegate, Runnable {
     val closed = AtomicBoolean(false)
     var trace: Throwable? = null
