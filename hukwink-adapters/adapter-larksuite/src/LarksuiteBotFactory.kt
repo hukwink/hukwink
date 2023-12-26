@@ -2,8 +2,10 @@ package com.hukwink.hukwink.adapter.larksuite
 
 import com.hukwink.hukwink.Bot
 import com.hukwink.hukwink.BotFactory
+import com.hukwink.hukwink.adapter.larksuite.message.serialization.LarksuiteSerializationRegistration
 import com.hukwink.hukwink.adapter.larksuite.netprocess.LarksuiteWebhookProcessor
 import com.hukwink.hukwink.config.BotConfiguration
+import com.hukwink.hukwink.message.serialization.HukwinkMessageSerialization
 import com.hukwink.hukwink.util.childScope
 import io.vertx.core.http.HttpClientOptions
 import io.vertx.core.http.HttpVersion
@@ -46,5 +48,10 @@ public class LarksuiteBotFactory : BotFactory {
             botScope.cancel()
             throw e
         }
+    }
+
+
+    override fun registerMessageSerializers(serialization: HukwinkMessageSerialization) {
+        LarksuiteSerializationRegistration.register(serialization)
     }
 }

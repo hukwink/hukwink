@@ -7,12 +7,14 @@ import com.hukwink.hukwink.resource.ExternalResource
 
 public interface Media : ExternalResource, MessageElement {
 
-    public companion object Key {
-        @JvmStatic
-        public fun outerLayout(): MessageOuterLayoutSerializer<Media> = MediaOuterLayout
-    }
 
     public val fileName: String
 
     public fun openCoverImage(bot: Bot): ExternalResource.ResourceHandle
+
+
+    public companion object Key {
+        @JvmStatic
+        public fun outerLayout(): MessageOuterLayoutSerializer<Media> = MediaOuterLayout
+    }
 }

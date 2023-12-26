@@ -1,6 +1,7 @@
 package com.hukwink.hukwink.apiinternal.serialization
 
 import com.hukwink.hukwink.message.MessageSource
+import com.hukwink.hukwink.util.ByteArrayHexStringSerializer
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
