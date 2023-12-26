@@ -5,6 +5,12 @@ plugins {
 
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 
+def projectAnnoOptIns = [
+        'com.hukwink.hukwink.util.HukwinkInternalApi',
+        'com.hukwink.hukwink.util.HukwinkExperimentalApi',
+]
+
+
 allprojects {
     pluginManager.withPlugin('java') {
         repositories {
@@ -27,6 +33,11 @@ allprojects {
         kotlin.sourceSets.getByName("test").kotlin.setSrcDirs(project.files("test"))
         kotlin.sourceSets.getByName("test").resources.setSrcDirs(project.files("tres"))
         project.sourceSets.getByName("test").java.setSrcDirs(List.of())
+
+
+        kotlin.sourceSets.configureEach { ktSourceSet ->
+            projectAnnoOptIns.each { languageSettings.optIn(it) }
+        }
 
 
         dependencies {
