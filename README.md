@@ -41,7 +41,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 |                      | 发送消息                    | 获取发出消息 ID                  | Y                              |
 |                      |                         | 纯文本                        | Y                              |
 |                      |                         | @At                        | Y                              |
+|                      |                         | 图片                         | Y                              |
+|                      | 消息序列化                   | ALL                        | Y                              |
 | 资源                   | 下载                      | 接受消息中图片下载                  | Y                              |
+|                      | 上传                      | 上传图片并发送                    | Y                              |
+|                      |                         | 发送文件                       | Y                              |
 
 </td></tr>
 </table>
