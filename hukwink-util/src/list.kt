@@ -1,6 +1,9 @@
+@file:JvmMultifileClass
+@file:JvmName("HukwinkUtilKt")
+
 package com.hukwink.hukwink.util
 
-import java.util.Collections
+import java.util.*
 
 public inline fun <T> MutableList<T>.removeFirst(filter: (T) -> Boolean): T? {
     val iter = iterator()

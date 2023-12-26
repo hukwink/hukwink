@@ -1,3 +1,6 @@
+@file:JvmMultifileClass
+@file:JvmName("HukwinkUtilKt")
+
 package com.hukwink.hukwink.util
 
 import io.netty.buffer.ByteBuf

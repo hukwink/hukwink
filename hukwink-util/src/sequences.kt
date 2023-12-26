@@ -1,3 +1,6 @@
+@file:JvmMultifileClass
+@file:JvmName("HukwinkUtilKt")
+
 package com.hukwink.hukwink.util
 
 public fun <K, V, V2> Sequence<Pair<K, V>>.mapValue(

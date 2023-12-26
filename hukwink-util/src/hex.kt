@@ -1,6 +1,9 @@
+@file:JvmMultifileClass
+@file:JvmName("HukwinkUtilKt")
+
 package com.hukwink.hukwink.util
 
-import java.util.HexFormat
+import java.util.*
 
 public fun ByteArray.encodeHex(format: HexFormat = HexFormat.of()): String {
     return format.formatHex(this)

@@ -1,3 +1,6 @@
+@file:JvmMultifileClass
+@file:JvmName("HukwinkUtilKt")
+
 package com.hukwink.hukwink.util
 
 public fun systemProp(prop: String, def: Boolean): Boolean = when (val value = System.getProperty(prop)) {
