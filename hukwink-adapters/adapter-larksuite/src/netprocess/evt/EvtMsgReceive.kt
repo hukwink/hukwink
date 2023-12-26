@@ -5,8 +5,6 @@ import com.hukwink.hukwink.adapter.larksuite.chatting.LarksuiteChat
 import com.hukwink.hukwink.adapter.larksuite.event.LarksuiteIncomingMessageEvent
 import com.hukwink.hukwink.adapter.larksuite.http.LarksuiteHttpResponseProcess
 import com.hukwink.hukwink.adapter.larksuite.message.*
-import com.hukwink.hukwink.adapter.larksuite.message.InternalAt
-import com.hukwink.hukwink.adapter.larksuite.message.InternalLineSpliterator
 import com.hukwink.hukwink.adapter.larksuite.message.file.LarksuiteFileFromChat
 import com.hukwink.hukwink.adapter.larksuite.message.image.LarksuiteImageFromChat
 import com.hukwink.hukwink.adapter.larksuite.netprocess.v2.MsgV2Header
@@ -167,7 +165,6 @@ private fun ProtoEventReceiveMessage.Message.parse(bot: LarksuiteBot): MessageCh
         "sticker" -> sequenceOf(
             LarksuiteSticker(
                 fileKey = jsonElm["file_key"]?.jsonPrimitive?.content.orEmpty(),
-                messageId = message_id,
             )
         )
         "interactive" -> sequenceOf() // TODO

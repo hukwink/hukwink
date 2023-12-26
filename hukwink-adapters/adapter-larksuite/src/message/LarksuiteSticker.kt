@@ -10,14 +10,13 @@ import io.netty.buffer.ByteBuf
 
 public class LarksuiteSticker(
     public val fileKey: String,
-    public val messageId: String,
 ) : MessageElement {
     override fun contentToString(): String {
         return "[sticker:$fileKey]"
     }
 
     override fun toString(): String {
-        return "[sticker:$fileKey,$messageId]"
+        return "[sticker:$fileKey]"
     }
 
 
@@ -28,14 +27,12 @@ public class LarksuiteSticker(
 
         override fun decode(buffer: ByteBuf): LarksuiteSticker {
             val fileKey = buffer.decodeCharSequence().toString()
-            val messageId = buffer.decodeCharSequence().toString()
 
-            return LarksuiteSticker(fileKey, messageId)
+            return LarksuiteSticker(fileKey)
         }
 
         override fun encode(message: LarksuiteSticker, buffer: ByteBuf) {
             buffer.encodeCharSequence(message.fileKey)
-            buffer.encodeCharSequence(message.messageId)
         }
 
     }
