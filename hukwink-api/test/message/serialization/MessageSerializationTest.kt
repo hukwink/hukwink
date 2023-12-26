@@ -1,7 +1,7 @@
 package com.hukwink.hukwink.message.serialization
 
-import com.hukwink.hukwink.apiinternal.misc.decodeCharSequence
-import com.hukwink.hukwink.apiinternal.misc.encodeCharSequence
+import com.hukwink.hukwink.util.decodeCharSequence
+import com.hukwink.hukwink.util.encodeCharSequence
 import com.hukwink.hukwink.message.*
 import com.hukwink.hukwink.message.MessageUtil.messageChainOf
 import com.hukwink.hukwink.util.hukwinkBuildJsonObject

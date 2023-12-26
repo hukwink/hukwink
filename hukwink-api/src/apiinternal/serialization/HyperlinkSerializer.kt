@@ -1,6 +1,6 @@
 package com.hukwink.hukwink.apiinternal.serialization
 
-import com.hukwink.hukwink.apiinternal.misc.encodeCharSequence
+import com.hukwink.hukwink.util.encodeCharSequence
 import com.hukwink.hukwink.message.Hyperlink
 import com.hukwink.hukwink.message.PlainText
 import com.hukwink.hukwink.message.serialization.MessageInternalDataSerializer

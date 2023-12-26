@@ -5,6 +5,7 @@ plugins {
 dependencies {
     api libs.kotlinx.coroutines.core
     compileOnly libs.kotlinx.serialization.json
+    compileOnly libs.netty.buffer
 
     api "org.jetbrains.kotlin:kotlin-reflect"
 }
