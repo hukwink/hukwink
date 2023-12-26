@@ -15,12 +15,17 @@ internal class LarksuiteResourceExposeAdapter(
     private val adapterScope = bot.coroutineScope.coroutineContext.childScope("LarksuiteResourceExposeAdapter")
 
     val folder = "/larksuite-res-expose-"// + UUID.randomUUID()
+    val uploaded = "/larksuite-res-uploaded-"// + UUID.randomUUID()
 
     init {
         val router = bot.configuration.httpServerDaemon.router
         println(folder)
         val theRoute = router.get("$folder/*")
-        adapterScope.coroutineContext.job.invokeOnCompletion { theRoute.remove() }
+        val theUploadedRoute = router.get("$uploaded/*")
+        adapterScope.coroutineContext.job.invokeOnCompletion {
+            theRoute.remove()
+            theUploadedRoute.remove()
+        }
 
         theRoute.handler { ctx ->
             // /open-apis/im/v1/messages/:message_id/resources/:file_key
@@ -55,5 +60,49 @@ internal class LarksuiteResourceExposeAdapter(
                 ctx.response().send(replied).coAwait()
             }
         }
+
+
+        theUploadedRoute.handler { ctx ->
+            val ptx = ctx.normalizedPath().substring(uploaded.length + 1)
+
+            // type/filekey
+            val pathSplit = ptx.split('/')
+
+            if (pathSplit.size != 2) {
+                ctx.response()
+                    .setStatusCode(403)
+                    .end("Bad request path: $ptx")
+                return@handler
+            }
+
+            val (resType, fileKey) = pathSplit
+
+            val netPath = when (resType) {
+                "uploadedImage" -> "/open-apis/im/v1/images/$fileKey"
+                "uploadedFile" -> "/open-apis/im/v1/files/$fileKey"
+                else -> {
+                    ctx.response()
+                        .setStatusCode(403)
+                        .end("Bad request path: $ptx")
+                    return@handler
+                }
+            }
+
+            adapterScope.launch(CoroutineName("adapter request# $resType - $fileKey") + ctx.vertx().dispatcher()) {
+                val replied = bot.httpClient.request(HttpMethod.GET, netPath).coAwait()
+                    .setFollowRedirects(true)
+                    .larksuiteAuthorization(bot).send().coAwait()
+
+                ctx.response().setStatusCode(replied.statusCode())
+
+                replied.getHeader("Content-Type")?.let {
+                    ctx.response().putHeader("Content-Type", it)
+                }
+
+                ctx.response().send(replied).coAwait()
+            }
+        }
+
+
     }
 }
